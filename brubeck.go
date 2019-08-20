@@ -12,16 +12,17 @@ import (
 func main() {
   argCount := len(os.Args[1:])
 
-  if argCount == 0 {
+  switch {
+  case argCount == 0:
     fmt.Println(time.Now().Unix())
-  } else if argCount == 1 {
+  case argCount == 1:
     timestamp, err := strconv.ParseInt(os.Args[1], 10, 64)
     if err != nil {
         panic(err)
     }
     tm := time.Unix(timestamp, 0)
     fmt.Println(tm)
-  } else if argCount == 3 && os.Args[2] == "in" {
+  case argCount == 3 && os.Args[2] == "in":
     timestamp, err := strconv.ParseInt(os.Args[1], 10, 64)
     if err != nil {
         panic(err)
@@ -31,7 +32,7 @@ func main() {
         panic(err)
     }
     fmt.Println(tm)
-  } else if argCount == 3 && (os.Args[3] == "ago" || os.Args[3] == "later") {
+  case argCount == 3 && (os.Args[3] == "ago" || os.Args[3] == "later"):
     amt, err := strconv.Atoi(os.Args[1])
     if err != nil {
         panic(err)
