@@ -26,7 +26,7 @@ func main() {
     if err != nil {
         panic(err)
     }
-    tm, err := time_convert(timestamp, os.Args[3])
+    tm, err := timeConvert(timestamp, os.Args[3])
     if err != nil {
         panic(err)
     }
@@ -39,7 +39,7 @@ func main() {
     if os.Args[3] == "ago" {
       amt = -amt
     }
-    tm, err := time_change(amt, os.Args[2])
+    tm, err := timeChange(amt, os.Args[2])
     if err != nil {
         panic(err)
     }
@@ -47,7 +47,7 @@ func main() {
   }
 }
 
-func time_change(amt int, unit string) (time.Time, error) {
+func timeChange(amt int, unit string) (time.Time, error) {
   start := time.Now()
   switch unit {
   case "day", "days", "d":
@@ -59,10 +59,10 @@ func time_change(amt int, unit string) (time.Time, error) {
   case "year", "years", "y":
     return start.AddDate(amt, 0, 0), nil
   }
-  return start, errors.New("Not implemented")
+  return start, errors.New("not implemented")
 }
 
-func time_convert(timestamp int64, abr string) (time.Time, error) {
+func timeConvert(timestamp int64, abr string) (time.Time, error) {
   var loc string
   switch strings.ToLower(abr) {
   case "pst", "pdt":
@@ -74,10 +74,10 @@ func time_convert(timestamp int64, abr string) (time.Time, error) {
   case "est", "edt":
     loc = "America/New_York"
   }
+  tm := time.Unix(timestamp, 0)
   location, err := time.LoadLocation(loc)
   if err != nil {
-      panic(err)
+      return tm, err
   }
-  tm := time.Unix(timestamp, 0)
   return tm.In(location), nil
 }
