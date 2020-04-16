@@ -15,10 +15,13 @@ func main() {
 	switch {
 	case argCount == 0:
 		fmt.Println(time.Now().Unix())
-	case argCount == 1:
+	case argCount == 1 && (len(os.Args[1]) == 10 || len(os.Args[1]) == 13):
 		timestamp, err := strconv.ParseInt(os.Args[1], 10, 64)
 		if err != nil {
 			panic(err)
+		}
+		if len(os.Args[1]) == 13 {
+			timestamp = timestamp / 1000
 		}
 		tm := time.Unix(timestamp, 0)
 		fmt.Println(tm)
