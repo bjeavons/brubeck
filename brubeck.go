@@ -10,48 +10,57 @@ import (
 )
 
 func main() {
-	argCount := len(os.Args[1:])
+	tm, err := brubeck(os.Args[1:])
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(tm)
+}
+
+func brubeck(args []string) (string, error) {
+	argCount := len(args)
 
 	switch {
 	case argCount == 0:
-		fmt.Println(time.Now().Unix())
-	case argCount == 1 && (len(os.Args[1]) == 10 || len(os.Args[1]) == 13):
-		timestamp, err := strconv.ParseInt(os.Args[1], 10, 64)
+		return strconv.FormatInt(time.Now().Unix(), 10), nil
+	case argCount == 1 && (len(args[0]) == 10 || len(args[0]) == 13):
+		timestamp, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			panic(err)
+			return "", err
 		}
-		if len(os.Args[1]) == 13 {
+		if len(args[0]) == 13 {
 			timestamp = timestamp / 1000
 		}
 		tm := time.Unix(timestamp, 0)
-		fmt.Println(tm)
-	case argCount == 3 && os.Args[2] == "in":
-		timestamp, err := strconv.ParseInt(os.Args[1], 10, 64)
+		return tm.String(), nil
+	case argCount == 3 && args[1] == "in":
+		timestamp, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			panic(err)
+			return "", err
 		}
-		if len(os.Args[1]) == 13 {
+		if len(args[0]) == 13 {
 			timestamp = timestamp / 1000
 		}
-		tm, err := timeConvert(timestamp, os.Args[3])
+		tm, err := timeConvert(timestamp, args[2])
 		if err != nil {
-			panic(err)
+			return "", err
 		}
-		fmt.Println(tm)
-	case argCount == 3 && (os.Args[3] == "ago" || os.Args[3] == "later"):
-		amt, err := strconv.Atoi(os.Args[1])
+		return tm.String(), nil
+	case argCount == 3 && (args[2] == "ago" || args[2] == "later"):
+		amt, err := strconv.Atoi(args[0])
 		if err != nil {
-			panic(err)
+			return "", err
 		}
-		if os.Args[3] == "ago" {
+		if args[2] == "ago" {
 			amt = -amt
 		}
-		tm, err := timeChange(amt, os.Args[2])
+		tm, err := timeChange(amt, args[1])
 		if err != nil {
-			panic(err)
+			return "", err
 		}
-		fmt.Println(tm.Unix())
+		return strconv.FormatInt(tm.Unix(), 10), nil
 	}
+	return "", nil
 }
 
 func timeChange(amt int, unit string) (time.Time, error) {
