@@ -30,6 +30,9 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+		if len(os.Args[1]) == 13 {
+			timestamp = timestamp / 1000
+		}
 		tm, err := timeConvert(timestamp, os.Args[3])
 		if err != nil {
 			panic(err)
