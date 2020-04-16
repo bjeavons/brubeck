@@ -2,20 +2,10 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 )
-
-func main() {
-	tm, err := brubeck(os.Args[1:])
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(tm)
-}
 
 func brubeck(args []string) (string, error) {
 	argCount := len(args)
