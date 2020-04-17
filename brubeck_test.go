@@ -52,3 +52,27 @@ func TestTimeChange(t *testing.T) {
 		})
 	}
 }
+
+func TestTimeConvert(t *testing.T) {
+	time := int64(1587079799)
+	var tests = []struct {
+		time int64
+		abr  string
+		want string
+	}{
+		{time, "pdt", "America/Los_Angeles"},
+		{time, "mst", "America/Denver"},
+		{time, "cdt", "America/Chicago"},
+		{time, "est", "America/New_York"},
+	}
+
+	for _, tt := range tests {
+		testname := fmt.Sprintf("%d,%s", tt.time, tt.abr)
+		t.Run(testname, func(t *testing.T) {
+			ans, _ := timeConvert(tt.time, tt.abr)
+			if ans.Location().String() != tt.want {
+				t.Errorf("Got %s, want %s", ans.Location().String(), tt.want)
+			}
+		})
+	}
+}
