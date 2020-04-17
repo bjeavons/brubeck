@@ -44,7 +44,8 @@ func brubeck(args []string) (string, error) {
 		if args[2] == "ago" {
 			amt = -amt
 		}
-		tm, err := timeChange(amt, args[1])
+		start := time.Now()
+		tm, err := timeChange(start, amt, args[1])
 		if err != nil {
 			return "", err
 		}
@@ -53,9 +54,8 @@ func brubeck(args []string) (string, error) {
 	return "", nil
 }
 
-func timeChange(amt int, unit string) (time.Time, error) {
-	start := time.Now()
-	switch unit {
+func timeChange(start time.Time, amt int, unit string) (time.Time, error) {
+	switch strings.ToLower(unit) {
 	case "day", "days", "d":
 		return start.AddDate(0, 0, amt), nil
 	case "week", "weeks", "w":
