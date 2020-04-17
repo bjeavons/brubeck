@@ -6,11 +6,48 @@ import (
 	"time"
 )
 
+func TestBrubeck(t *testing.T) {
+	// Test too many arguments.
+	args := []string{"one", "two", "three", "four"}
+	emptyResult, _ := brubeck(args)
+	if emptyResult != "" {
+		t.Errorf("Got %s, expected empty string result", emptyResult)
+	}
+
+	// Test empty arguments.
+	args = []string{}
+	ans, err := brubeck(args)
+	if err != nil {
+		t.Error("Got error, expected none")
+	}
+	if len(ans) == 0 {
+		t.Error("Got empty answer, expected length > 0")
+	}
+
+	// Test 3 arguments.
+	args = []string{"1587079799", "in", "pst"}
+	ans, err = brubeck(args)
+	if err != nil {
+		t.Error("Got error, expected none")
+	}
+	if len(ans) == 0 {
+		t.Error("Got empty answer, expected length > 0")
+	}
+	args = []string{"3", "days", "ago"}
+	ans, err = brubeck(args)
+	if err != nil {
+		t.Error("Got error, expected none")
+	}
+	if len(ans) == 0 {
+		t.Error("Got empty answer, expected length > 0")
+	}
+}
+
 func TestTimeChange(t *testing.T) {
 	// Test error result.
 	_, errResult := timeChange(time.Now(), 0, "Nods")
 	if errResult == nil {
-		t.Errorf("timeChange(_, \"Nods\") failed, expected error result")
+		t.Errorf("Got no error, expected one")
 	}
 
 	// Test day, week, and year forward and backward.
@@ -47,7 +84,7 @@ func TestTimeChange(t *testing.T) {
 		t.Run(testname, func(t *testing.T) {
 			ans, _ := timeChange(tt.start, tt.amt, tt.unit)
 			if ans != tt.want {
-				t.Errorf("Got %s, want %s", ans, tt.want)
+				t.Errorf("Got %s, expected %s", ans, tt.want)
 			}
 		})
 	}
@@ -71,7 +108,7 @@ func TestTimeConvert(t *testing.T) {
 		t.Run(testname, func(t *testing.T) {
 			ans, _ := timeConvert(tt.time, tt.abr)
 			if ans.Location().String() != tt.want {
-				t.Errorf("Got %s, want %s", ans.Location().String(), tt.want)
+				t.Errorf("Got %s, expected %s", ans.Location().String(), tt.want)
 			}
 		})
 	}
