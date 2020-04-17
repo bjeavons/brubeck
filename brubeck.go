@@ -1,80 +1,61 @@
 package main
 
 import (
-	"bufio"
 	"errors"
-	"fmt"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func main() {
-	var argCount int
-	var args []string
-	fileInfo, _ := os.Stdin.Stat()
-	if fileInfo.Mode()&os.ModeNamedPipe != 0 {
-		scanner := bufio.NewScanner(os.Stdin)
-		var input string
-		for scanner.Scan() {
-			input = scanner.Text()
-		}
-		if err := scanner.Err(); err != nil {
-			panic(err)
-		}
-		args = strings.Fields(input)
-		argCount = len(args)
-	} else {
-		argCount = len(os.Args[1:])
-		args = os.Args[1:]
-	}
+func brubeck(args []string) (string, error) {
+	argCount := len(args)
 
 	switch {
 	case argCount == 0:
-		fmt.Println(time.Now().Unix())
+		return strconv.FormatInt(time.Now().Unix(), 10), nil
 	case argCount == 1 && (len(args[0]) == 10 || len(args[0]) == 13):
 		timestamp, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			panic(err)
+			return "", err
 		}
 		if len(args[0]) == 13 {
 			timestamp = timestamp / 1000
 		}
 		tm := time.Unix(timestamp, 0)
-		fmt.Println(tm)
+		return tm.String(), nil
 	case argCount == 3 && args[1] == "in":
 		timestamp, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			panic(err)
+			return "", err
 		}
 		if len(args[0]) == 13 {
 			timestamp = timestamp / 1000
 		}
 		tm, err := timeConvert(timestamp, args[2])
 		if err != nil {
-			panic(err)
+			return "", err
 		}
-		fmt.Println(tm)
+		return tm.String(), nil
 	case argCount == 3 && (args[2] == "ago" || args[2] == "later"):
 		amt, err := strconv.Atoi(args[0])
 		if err != nil {
-			panic(err)
+			return "", err
 		}
 		if args[2] == "ago" {
 			amt = -amt
 		}
-		tm, err := timeChange(amt, args[1])
+		start := time.Now()
+		tm, err := timeChange(start, amt, args[1])
 		if err != nil {
-			panic(err)
+			return "", err
 		}
-		fmt.Println(tm.Unix())
+		return strconv.FormatInt(tm.Unix(), 10), nil
 	}
+	return "", nil
 }
 
-func timeChange(amt int, unit string) (time.Time, error) {
-	start := time.Now()
-	switch unit {
+func timeChange(start time.Time, amt int, unit string) (time.Time, error) {
+	switch strings.ToLower(unit) {
 	case "day", "days", "d":
 		return start.AddDate(0, 0, amt), nil
 	case "week", "weeks", "w":
